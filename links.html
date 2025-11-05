@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif;
+        }
+        header {
+            background-color: #5f8575;
+        }
+
+      .wrap {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+      .profile {
+        text-align: center;
+        color: #FFF;
+        margin-bottom: 20px;
+      }
+      .photo {
+        height: 200px;
+        width: 100%;        
+      }
+      .img{
+        height: 100%;
+        width: 200px;
+        border-radius: 10%;
+        background-image: url(logo.png);
+        background-position: center;
+        background-size: cover;
+        margin: 0 auto;
+      }
+      .profile_name {
+        font-weight: bold;
+        font-size:18px;
+        display: block;
+        margin: 8px 0;
+      }
+      .at {
+        font-size: 13px;
+      }
+      
+      .custom-btn {
+        width: 100%;
+        height: 45px;
+        color: #fff;
+        border-radius: 5px;
+        padding: 10px 25px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 18px;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: block;
+         box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+         7px 7px 20px 0px rgba(0,0,0,.1),
+         4px 4px 5px 0px rgba(0,0,0,.1);
+        outline: none;
+      }
+
+      .btn-8 {
+        background: rgb(214,238,174);
+        background: radial-gradient(circle, rgba(214,238,174,1) 0%, rgba(196,233,148,1) 100%);
+        line-height: 42px;
+        padding: 0;
+        margin: 14px 0;
+        border: none;
+      }
+      .btn-8 span {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .btn-8 span a{
+        text-decoration: none;
+        color: black;
+      }
+      .btn-8 span:hover a{
+        color: rgb(214,238,174);
+      }
+      .btn-8:before,
+      .btn-8:after {
+        position: absolute;
+        content: "";
+        right: 0;
+        bottom: 0;
+        background: rgb(214,238,174);
+        /*box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+                    -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+          inset -4px -4px 6px 0 rgba(255,255,255,.5),
+          inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
+        transition: all 0.3s ease;
+      }
+      .btn-8:before{
+         height: 0%;
+         width: 2px;
+      }
+      .btn-8:after {
+        width: 0%;
+        height: 2px;
+      }
+      .btn-8:hover:before {
+        height: 100%;
+      }
+      .btn-8:hover:after {
+        width: 100%;
+      }
+      .btn-8:hover{
+        background: transparent;
+      }
+      .btn-8 span:hover{
+        color: rgb(214,238,174);
+      }
+      .btn-8 span:before,
+      .btn-8 span:after {
+        position: absolute;
+        content: "";
+        left: 0;
+        top: 0;
+        background: rgb(214,238,174);
+        /*box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+                    -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+          inset -4px -4px 6px 0 rgba(255,255,255,.5),
+          inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
+        transition: all 0.3s ease;
+      }
+      .btn-8 span:before {
+        width: 2px;
+        height: 0%;
+      }
+      .btn-8 span:after {
+        height: 2px;
+        width: 0%;
+      }
+      .btn-8 span:hover:before {
+        height: 100%;
+      }
+      .btn-8 span:hover:after {
+        width: 100%;
+      }
+
+    </style>
+<body class="bg-gray-100">
+      <div class="max-w-full mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">Links</h1>
+        </header>
+    <div class="wrap">
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/pc2/default.aspx" target="_blank">Price Checker</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/pc2/default.aspx" target="_blank">Price Checker V2</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/signage/PDT.aspx" target="_blank">Online Signage</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/signage2023/Default.aspx" target="_blank">Online Signage V2</a></span>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/promochecker/promochecker.aspx" target="_blank">Promo Checker</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/buyingpromochecker/" target="_blank">Buying Promo Checker</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.45:82/pc//SL.aspx" target="_blank"> Stock Level</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.20:81/Endcap/Default.aspx" target="_blank">EndCAP Report</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.128.19:8000/sap/bc/gui/sap/its/zpdt_pdt" target="_blank">SAP</a></span></button>
+          <button class="custom-btn btn-8"><span><a href="http://192.168.17.20:81/inventory" target="_blank"> Physical Inventory</a></span></button>
+        </button>  
+      </div>
+</body>
+</html>

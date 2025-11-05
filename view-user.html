@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>View Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+        body {
+            font-family: "Inter", sans-serif;
+        }
+        header {
+            background-color: #5f8575;
+        }
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
+        }
+        table {
+            min-width: 800px;
+        }
+        @media (max-width: 768px) {
+            .table-container {
+                padding-bottom: 20px;
+            }
+            th,
+            td {
+                padding: 8px 12px;
+            }
+        }
+        /* Pagination styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .pagination button {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .pagination button:hover:not(:disabled) {
+            background-color: #e5e7eb;
+        }
+        .pagination button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .pagination .active {
+            background-color: #5f8575;
+            color: white;
+            border-color: #5f8575;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-full mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">View User</h1>
+        </header>
+
+        <main class="p-4">
+            <div class="table-container">
+                <table class="min-w-full bg-white" id="userTable">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                First Name
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Last Name
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Email
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Position
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Department
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Status
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Added On
+                            </th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- User data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination controls -->
+            <div class="pagination" id="pagination"></div>
+
+            <!-- Modal -->
+        <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg w-11/12 max-w-md mx-auto">
+                <h2 class="text-xl font-bold mb-4">Details</h2>
+                <div id="modalContent" class="space-y-2">
+                    <!-- Details will be populated here -->
+                </div>
+                <button id="closeModal" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">Close</button>
+            </div>
+        </div>
+        </main>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+    let userList = JSON.parse(localStorage.getItem("regularUsers")) || [];
+    const tableBody = document.querySelector("#userTable tbody");
+    const paginationContainer = document.getElementById("pagination");
+
+    const rowsPerPage = 5; // Number of rows per page
+    let currentPage = 1;
+
+    function renderTablePage(page) {
+        tableBody.innerHTML = "";
+
+        if (userList.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td colspan="8" class="py-4 text-center text-gray-500">
+                    No users found. Add some users first.
+                </td>
+            `;
+            tableBody.appendChild(row);
+            paginationContainer.innerHTML = "";
+            return;
+        }
+
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageUsers = userList.slice(start, end);
+
+        pageUsers.forEach((user, index) => {
+            const row = document.createElement("tr");
+            row.className = "border-b border-gray-200 hover:bg-gray-50 cursor-pointer";
+
+            const addedDate = new Date(user.createdAt);
+            const formattedDate = addedDate.toLocaleDateString();
+
+            // Calculate the actual index in userList for delete button
+            const actualIndex = start + index;
+
+            row.innerHTML = `
+                <td class="py-2 px-4 whitespace-nowrap">${user.firstName || "-"}</td>
+                <td class="py-2 px-4 whitespace-nowrap">${user.lastName || "-"}</td>
+                <td class="py-2 px-4 whitespace-nowrap">${user.email || "-"}</td>
+                <td class="py-2 px-4 whitespace-nowrap">${user.position || "-"}</td>
+                <td class="py-2 px-4 whitespace-nowrap">${user.department || "-"}</td>
+                <td class="py-2 px-4 whitespace-nowrap">${user.status || "-"}</td>
+
+
+                <td class="py-2 px-4 whitespace-nowrap">${formattedDate}</td>
+                <td class="py-2 px-4 whitespace-nowrap">
+                    <button
+                        class="text-red-600 hover:text-red-800"
+                        data-index="${actualIndex}"
+                        aria-label="Delete user"
+                    >
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            // Add click event to open modal on row click (except on delete button)
+            row.addEventListener("click", (e) => {
+                if (!e.target.closest("button")) {
+                    openModal(user);
+                }
+            });
+
+            tableBody.appendChild(row);
+        });
+
+        renderPagination();
+    }
+
+    function renderPagination() {
+        paginationContainer.innerHTML = "";
+
+        const totalPages = Math.ceil(userList.length / rowsPerPage);
+        if (totalPages <= 1) return; // No need for pagination if only 1 page
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "Previous";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTablePage(currentPage);
+            }
+        });
+        paginationContainer.appendChild(prevBtn);
+
+        // Page number buttons
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement("button");
+            pageBtn.textContent = i;
+            if (i === currentPage) {
+                pageBtn.classList.add("active");
+                pageBtn.disabled = true;
+            }
+            pageBtn.addEventListener("click", () => {
+                currentPage = i;
+                renderTablePage(currentPage);
+            });
+            paginationContainer.appendChild(pageBtn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Next";
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener("click", () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTablePage(currentPage);
+            }
+        });
+        paginationContainer.appendChild(nextBtn);
+    }
+
+    // Delete button event delegation
+    tableBody.addEventListener("click", function (e) {
+        if (
+            e.target.closest("button") &&
+            e.target.closest("button").hasAttribute("data-index")
+        ) {
+            const btn = e.target.closest("button");
+            const index = parseInt(btn.getAttribute("data-index"), 10);
+
+            if (
+                confirm(
+                    `Are you sure you want to delete user: ${userList[index].firstName} ${userList[index].lastName}?`
+                )
+            ) {
+                userList.splice(index, 1);
+                localStorage.setItem("regularUsers", JSON.stringify(userList));
+
+                // Adjust current page if needed
+                const totalPages = Math.ceil(userList.length / rowsPerPage);
+                if (currentPage > totalPages) {
+                    currentPage = totalPages;
+                }
+                if (currentPage === 0) currentPage = 1;
+
+                renderTablePage(currentPage);
+            }
+        }
+    });
+
+    // Modal elements
+    const modal = document.getElementById("detailsModal");
+    const modalContent = document.getElementById("modalContent");
+    const closeModalButton = document.getElementById("closeModal");
+
+    function openModal(user) {
+        modalContent.innerHTML = `
+            <p><strong>First Name:</strong> ${user.firstName || "-"}</p>
+            <p><strong>Last Name:</strong> ${user.lastName || "-"}</p>
+            <p><strong>Email:</strong> ${user.email || "-"}</p>
+            <p><strong>Position:</strong> ${user.position || "-"}</p>
+            <p><strong>Department:</strong> ${user.department || "-"}</p>
+            <p><strong>Status:</strong> ${user.status || "-"}</p>
+            <p><strong>Added On:</strong> ${new Date(user.createdAt).toLocaleDateString() || "-"}</p>
+        `;
+        modal.classList.remove("hidden");
+    }
+
+    closeModalButton.addEventListener("click", () => {
+        modal.classList.add("hidden");
+    });
+
+    // Initial render
+    renderTablePage(currentPage);
+});
+
+        </script>
+    </div>
+</body>
+</html>

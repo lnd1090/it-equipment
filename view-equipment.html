@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Equipment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        header {
+            background-color: #5f8575;
+        }
+        .export-button {
+            background-color: #38a169; /* Green background */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-full mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">View Equipment</h1>
+        </header>
+
+        <main class="p-4">
+            <button class="export-button" id="exportBtn">Export</button>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white" id="equipmentTable">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Type</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Brand</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Model</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Description</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Qty</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Serial</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">MID</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">TID</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">EMEI</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Purchase Date</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Status</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Remarks</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Assigned User</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Deployed Date</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Equipment data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal -->
+        <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg w-11/12 max-w-md mx-auto">
+                <h2 class="text-xl font-bold mb-4">Details</h2>
+                <div id="modalContent" class="space-y-2">
+                    <!-- Details will be populated here -->
+                </div>
+                <button id="closeModal" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">Close</button>
+            </div>
+        </div>
+        </main>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const equipmentList = JSON.parse(localStorage.getItem('equipment')) || [];
+    const tableBody = document.querySelector('#equipmentTable tbody');
+    
+    if (equipmentList.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td colspan="15" class="py-4 text-center text-gray-500">
+                No equipment found. Add some equipment first.
+            </td>
+        `;
+        tableBody.appendChild(row);
+        return;
+    }
+    
+    equipmentList.forEach((equipment, index) => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50 cursor-pointer';
+        
+        row.innerHTML = `
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.type || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.brand || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.model || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.description || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.quantity || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.serialNumber || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.midNumber || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.tidNumber || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.emeiNumber || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.purchaseDate || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.status || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.remarks || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.assignedTo || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equipment.deployedDate || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap flex space-x-2">
+                <button onclick="deleteEquipment('${equipment.serialNumber}')" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        
+        // Open modal on row click except when clicking the delete button
+        row.addEventListener('click', (e) => {
+            if (!e.target.closest('button')) {
+                openModal(equipment);
+            }
+        });
+        
+        tableBody.appendChild(row);
+    });
+
+    // Attach export button event listener here
+    document.getElementById('exportBtn').addEventListener('click', exportTableToExcel);
+});
+
+// Modal elements
+const modal = document.getElementById("detailsModal");
+const modalContent = document.getElementById("modalContent");
+const closeModalButton = document.getElementById("closeModal");
+
+function openModal(equipment) {
+    modalContent.innerHTML = `
+        <p><strong>Type:</strong> ${equipment.type || '-'}</p>
+        <p><strong>Brand:</strong> ${equipment.brand || '-'}</p>
+        <p><strong>Model:</strong> ${equipment.model || '-'}</p>
+        <p><strong>Description:</strong> ${equipment.description || '-'}</p>
+        <p><strong>Quantity:</strong> ${equipment.quantity || '-'}</p>
+        <p><strong>Serial Number:</strong> ${equipment.serialNumber || '-'}</p>
+        <p><strong>MID Number:</strong> ${equipment.midNumber || '-'}</p>
+        <p><strong>TID Number:</strong> ${equipment.tidNumber || '-'}</p>
+        <p><strong>EMEI Number:</strong> ${equipment.emeiNumber || '-'}</p>
+        <p><strong>Purchase Date:</strong> ${equipment.purchaseDate || '-'}</p>
+        <p><strong>Status:</strong> ${equipment.status || '-'}</p>
+        <p><strong>Remarks:</strong> ${equipment.remarks || '-'}</p>
+        <p><strong>Assigned User:</strong> ${equipment.assignedTo || '-'}</p>
+        <p><strong>Deployed Date:</strong> ${equipment.deployedDate || '-'}</p>
+    `;
+    modal.classList.remove("hidden");
+}
+
+closeModalButton.addEventListener("click", () => {
+    modal.classList.add("hidden");
+});
+
+function exportTableToExcel(filename = 'Equipments') {
+    const equipmentList = JSON.parse(localStorage.getItem('equipment')) || [];
+    if (equipmentList.length === 0) {
+        alert('No equipment data to export.');
+        return;
+    }
+
+    // Define CSV headers matching your table columns (except Actions)
+    const headers = [
+        'Type', 'Brand', 'Model', 'Description', 'Qty', 'Serial',
+        'MID', 'TID', 'EMEI', 'Purchase Date', 'Status', 'Remarks',
+        'Assigned User', 'Deployed Date'
+    ];
+
+    // Build CSV content
+    let csvContent = headers.join(',') + '\n';
+
+    equipmentList.forEach(equip => {
+        const row = [
+            equip.type || '',
+            equip.brand || '',
+            equip.model || '',
+            `"${(equip.description || '').replace(/"/g, '""')}"`, // quote and escape quotes
+            equip.quantity || '',
+            `"${(equip.serialNumber || '').replace(/"/g, '""')}"`,
+            equip.midNumber || '',
+            equip.tidNumber || '',
+            equip.emeiNumber || '',
+            equip.purchaseDate || '',
+            equip.status || '',
+            `"${(equip.remarks || '').replace(/"/g, '""')}"`,
+            equip.assignedTo || '',
+            equip.deployedDate || ''
+        ];
+        csvContent += row.join(',') + '\n';
+    });
+
+    // Create a blob and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename + '.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+window.exportTableToExcel = exportTableToExcel;
+
+
+
+</script>
+
+
+</body>
+</html>

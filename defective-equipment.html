@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defective Equipment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif;
+        }
+        header {
+            background-color: #5f8575;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-full mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">Defective Equipment</h1>
+        </header>
+
+        <main class="p-4">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white" id="deletedEquipmentTable">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Type</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Brand</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Model</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Serial</th>
+                            <th class="py-2 px-4 border-b border-gray-200 text-left">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Defective equipment will be listed here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- Modal -->
+        <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg w-11/12 max-w-md mx-auto">
+                <h2 class="text-xl font-bold mb-4">Details</h2>
+                <div id="modalContent" class="space-y-2">
+                    <!-- Details will be populated here -->
+                </div>
+                <button id="closeModal" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">Close</button>
+            </div>
+        </div>
+
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all equipment from localStorage
+    const equipmentList = JSON.parse(localStorage.getItem('equipment')) || [];
+    // Filter only defective equipment
+    const defectiveList = equipmentList.filter(equip => equip.status === 'Defective');
+    const tableBody = document.querySelector('#deletedEquipmentTable tbody');
+    const userCredentials = JSON.parse(localStorage.getItem('userCredentials'));
+    const currentUser  = userCredentials ? userCredentials.username : 'Unknown';
+
+    if (defectiveList.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td colspan="5" class="py-4 text-center text-gray-500">
+                No defective equipment found
+            </td>
+        `;
+        tableBody.appendChild(row);
+        return;
+    }
+
+    defectiveList.forEach((equip, index) => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50 cursor-pointer';
+        row.setAttribute('data-index', index);
+
+        row.innerHTML = `
+            <td class="py-2 px-4 whitespace-nowrap">${equip.type || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equip.brand || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equip.model || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equip.serialNumber || '-'}</td>
+            <td class="py-2 px-4 whitespace-nowrap">${equip.remarks || '-'}</td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+
+    // Add event listeners to table rows
+    const rows = document.querySelectorAll('#deletedEquipmentTable tbody tr');
+    rows.forEach(row => {
+        row.addEventListener('click', () => {
+            const index = row.getAttribute('data-index');
+            const equip = defectiveList[index];
+            openModal(equip);
+        });
+    });
+
+    // Modal functions
+    const modal = document.getElementById('detailsModal');
+    const modalContent = document.getElementById('modalContent');
+    const closeModalButton = document.getElementById('closeModal');
+
+    function openModal(equip) {
+        modalContent.innerHTML = `
+            <p><strong>Type:</strong> ${equip.type || '-'}</p>
+            <p><strong>Brand:</strong> ${equip.brand || '-'}</p>
+            <p><strong>Model:</strong> ${equip.model || '-'}</p>
+            <p><strong>Serial Number:</strong> ${equip.serialNumber || '-'}</p>
+            <p><strong>Remarks:</strong> ${equip.remarks || '-'}</p>
+            <p><strong>Status:</strong> ${equip.status || '-'}</p>
+        `;
+        modal.classList.remove('hidden');
+    }
+
+    closeModalButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+});
+
+        </script>
+    </div>
+</body>
+</html>

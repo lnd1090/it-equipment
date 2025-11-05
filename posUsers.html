@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pos Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        header {
+            background-color: #5f8575;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">Pos User Code</h1>
+        </header>
+
+        <!-- Form Content -->
+        <main class="p-4">
+            <form class="space-y-4" id="userCodeRequestForm">
+                <!-- User Access From Number -->
+                <div>
+                    <label class="block text-gray-7 00 text-sm font-medium mb-1">UAF #</label>
+                    <input type="text" id="uafNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- User Ticket Number -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Ticket #</label>
+                    <input type="text" id="ticketNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- User First Name -->
+                <div>
+                    <label class="block text-gray-7 00 text-sm font-medium mb-1">First Name</label>
+                    <input type="text" id="firstName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- User Last Name -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Last Name</label>
+                    <input type="text" id="lastName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- User Code -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Code</label>
+                    <input type="number" id="userCode" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- User Department -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Department</label>
+                    <select id="userDepartment" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Front End</option>
+                        <option>Membership</option>
+                        <option>Food Central</option>
+                        <option>FC Doppio</option>
+                        <option>Caltex</option>
+                        <option>Retail Local</option>
+                        <option>Food Local</option>
+                        <option>Federal Local</option>
+                    </select>
+                </div>
+
+                <!-- User Privilage -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Privilage</label>
+                    <div class="flex">
+                        <input type="text" id="userPrivilage" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                </div>
+
+                <!-- User Position -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Position</label>
+                    <select id="userPosition" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Manager</option>
+                        <option>Supervisor</option>
+                        <option>Cashier</option>
+                        <option>Clerk</option>
+                    </select>
+                </div>
+
+                <!-- Employment Type -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Employment Type</label>
+                    <select id="employmentType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Active</option>
+                        <option>Resigned</option>
+                    </select>
+                </div>
+
+                <!-- User Status -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Status</label>
+                    <select id="status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Direct</option>
+                        <option>Seasonal</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                    Save User Code
+                </button>
+            </form>
+
+            <!-- Data Table -->
+<div class="mt-6 overflow-auto max-h-96">
+    <h2 class="text-lg font-semibold mb-2">Pos User Code</h2>
+    <table class="min-w-full bg-white border border-gray-300 table-auto">
+        <thead class="bg-gray-200 sticky top-0">
+            <tr>
+                <th class="border px-2 py-1 text-xs">UAF #</th>
+                <th class="border px-2 py-1 text-xs">Ticket #</th>
+                <th class="border px-2 py-1 text-xs">First Name</th>
+                <th class="border px-2 py-1 text-xs">Last Name</th>
+                <th class="border px-2 py-1 text-xs">Code</th>
+                <th class="border px-2 py-1 text-xs">Department</th>
+                <th class="border px-2 py-1 text-xs">Privilage</th>
+                <th class="border px-2 py-1 text-xs">Position</th>
+                <th class="border px-2 py-1 text-xs">Employment Type</th>
+                <th class="border px-2 py-1 text-xs">Status</th>
+            </tr>
+        </thead>
+        <tbody id="dataTableBody" class="text-xs">
+            <!-- Data will be populated here -->
+        </tbody>
+    </table>
+</div>
+        </main>
+    </div>
+
+    <!-- Modal for displaying details -->
+<div id="detailModal" class="modal">
+    <div class="modal-content max-h-[80vh] overflow-y-auto">
+        <span id="closeModal">&times;</span>
+        <h2 class="text-lg font-semibold mb-2">Pos User Code Details</h2>
+        <div id="modalContent" class="space-y-1 text-sm"></div>
+        <div class="mt-4">
+            <label class="block text-gray-700 text-sm font-medium mb-1">Status</label>
+            <div class="flex space-x-4">
+                <label class="inline-flex items-center">
+                    <input type="radio" name="editStatus" value="Direct" class="text-blue-600" />
+                    <span class="ml-2">Direct</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" name="editStatus" value="Seasonal" class="text-blue-600" />
+                    <span class="ml-2">Seasonal</span>
+                </label>
+            </div>
+            <button
+                id="saveEditButton" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors mt-4">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Generate a unique ID for each request
+    function generateUniqueId() {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
+
+    // Save form data to local storage
+    document.getElementById("userCodeRequestForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const userCodeData = {
+            id: generateUniqueId(),
+            uafNumber: document.getElementById("uafNumber").value,
+            ticketNumber: document.getElementById("ticketNumber").value,
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            userCode: document.getElementById("userCode").value,
+            userDepartment: document.getElementById("userDepartment").value,
+            userPrivilage: document.getElementById("userPrivilage").value,
+            userPosition: document.getElementById("userPosition").value,
+            employmentType: document.getElementById("employmentType").value,
+            status: document.getElementById("status").value
+        };
+
+        let requests = JSON.parse(localStorage.getItem("userCodeRequests")) || [];
+        requests.push(userCodeData);
+        localStorage.setItem("userCodeRequests", JSON.stringify(requests));
+
+        this.reset();
+        populateDataTable();
+    });
+
+    // Populate the data table
+    function populateDataTable() {
+        const dataTableBody = document.getElementById("dataTableBody");
+        dataTableBody.innerHTML = "";
+
+        const requests = JSON.parse(localStorage.getItem("userCodeRequests")) || [];
+        requests.forEach((request) => {
+            const row = document.createElement("tr");
+            row.classList.add("cursor-pointer", "hover:bg-gray-100");
+            row.onclick = () => showDetails(request);
+            row.innerHTML = `
+                <td class="border px-2 py-1">${request.uafNumber}</td>
+                <td class="border px-2 py-1">${request.ticketNumber}</td>
+                <td class="border px-2 py-1">${request.firstName}</td>
+                <td class="border px-2 py-1">${request.lastName}</td>
+                <td class="border px-2 py-1">${request.userCode}</td>
+                <td class="border px-2 py-1">${request.userDepartment}</td>
+                <td class="border px-2 py-1">${request.userPrivilage}</td>
+                <td class="border px-2 py-1">${request.userPosition}</td>
+                <td class="border px-2 py-1">${request.employmentType}</td>
+                <td class="border px-2 py-1">${request.status}</td>
+            `;
+            dataTableBody.appendChild(row);
+        });
+    }
+
+    // Show details in modal
+    let currentRequestId = null;
+
+    function showDetails(request) {
+        currentRequestId = request.id;
+        const modalContent = document.getElementById("modalContent");
+        modalContent.innerHTML = `
+            <p><strong>UAF #:</strong> ${request.uafNumber}</p>
+            <p><strong>Ticket #:</strong> ${request.ticketNumber}</p>
+            <p><strong>First Name:</strong> ${request.firstName}</p>
+            <p><strong>Last Name:</strong> ${request.lastName}</p>
+            <p><strong>Code:</strong> ${request.userCode}</p>
+            <p><strong>Department:</strong> ${request.userDepartment}</p>
+            <p><strong>Privilage:</strong> ${request.userPrivilage}</p>
+            <p><strong>Position:</strong> ${request.userPosition}</p>
+            <p><strong>Employment Type:</strong> ${request.employmentType}</p>
+            <p><strong>Status:</strong> ${request.status}</p>
+        `;
+
+        // Set the current status in the modal editStatus radios
+        const statusRadioButtons = document.querySelectorAll('input[name="editStatus"]');
+        statusRadioButtons.forEach(radio => {
+            radio.checked = radio.value === request.status;
+        });
+
+        // Show the modal
+        document.getElementById("detailModal").style.display = "block";
+    }
+
+    // Save edited status
+    document.getElementById("saveEditButton").addEventListener("click", function () {
+        const newStatus = document.querySelector('input[name="editStatus"]:checked').value;
+
+        let requests = JSON.parse(localStorage.getItem("userCodeRequests")) || [];
+        const requestIndex = requests.findIndex(request => request.id === currentRequestId);
+        if (requestIndex !== -1) {
+            requests[requestIndex].status = newStatus;
+            localStorage.setItem("userCodeRequests", JSON.stringify(requests));
+        }
+
+        document.getElementById("detailModal").style.display = "none";
+        populateDataTable();
+    });
+
+    // Close modal
+    document.getElementById("closeModal").onclick = function () {
+        document.getElementById("detailModal").style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target === document.getElementById("detailModal")) {
+            document.getElementById("detailModal").style.display = "none";
+        }
+    };
+
+    // Populate the data table on page load
+    window.onload = populateDataTable;
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Request</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        header {
+            background-color: #5f8575;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">Equipment Request</h1>
+        </header>
+
+        <!-- Form Content -->
+        <main class="p-4">
+            <form class="space-y-4" id="equipmentRequestForm">
+                <!-- Equipment Type -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Equipment Type</label>
+                    <select id="equipmentType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Desktop</option>
+                        <option>Laptop</option>
+                        <option>Printer</option>
+                        <option>POS</option>
+                        <option>Drawer</option>
+                        <option>Scanner</option>
+                        <option>PDT</option>
+                        <option>EFT</option>
+                    </select>
+                </div>
+
+                <!-- Equipment Brand -->
+                <div>
+                    <label class="block text-gray-7 00 text-sm font-medium mb-1">Brand</label>
+                    <input type="text" id="equipmentBrand" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- Equipment Model -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Model</label>
+                    <input type="text" id="equipmentModel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Quantity</label>
+                    <input type="number" id="equipmentQuantity" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <!-- Serial Number with Barcode Scanner -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Serial Number</label>
+                    <div class="flex">
+                        <input type="text" id="serialNumber" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                </div>
+
+                <!-- Tech Eval -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Tech Evaluation</label>
+                    <input type="text" id="techEvaluation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- SSRF -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">SSRF</label>
+                    <input type="text" id="ssrf" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Priority -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Priority</label>
+                    <select id="priority" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+
+                <!-- Due Date -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Due Date</label>
+                    <input type="date" id="dueDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-1">Status</label>
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="status" value="Pending" class="text-blue-600" checked>
+                            <span class="ml-2">Pending</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="status" value="Resolved" class="text-blue-600">
+                            <span class="ml-2">Resolved</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                    Save Request
+                </button>
+            </form>
+
+            <!-- Data Table -->
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold mb-2">Equipment Requests</h2>
+                <table class="min-w-full bg-white border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="border px-4 py-2">Equipment</th>
+                            <th class="border px-4 py-2">Brand</th>
+                            <th class="border px-4 py-2">Model</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for displaying details -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="float-right cursor-pointer">&times;</span>
+            <h2 class="text-lg font-semibold mb-2">Request Details</h2>
+            <div id="modalContent"></div>
+            <div class="mt-4">
+                <label class="block text-gray-700 text-sm font-medium mb-1">Status</label>
+                <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="editStatus" value="Pending" class="text-blue-600">
+                        <span class="ml-2">Pending</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="editStatus" value="Resolved" class="text-blue-600">
+                        <span class="ml-2">Resolved</span>
+                    </label>
+                </div>
+                <button id="saveEditButton" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors mt-4">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate a unique ID for each request
+        function generateUniqueId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Save form data to local storage
+        document.getElementById('equipmentRequestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Collect form data
+            const equipmentData = {
+                id: generateUniqueId(), // Add unique ID
+                type: document.getElementById('equipmentType').value,
+                brand: document.getElementById('equipmentBrand').value,
+                model: document.getElementById('equipmentModel').value,
+                quantity: document.getElementById('equipmentQuantity').value,
+                serialNumber: document.getElementById('serialNumber').value,
+                techEvaluation: document.getElementById('techEvaluation').value,
+                ssrf: document.getElementById('ssrf').value,
+                priority: document.getElementById('priority').value,
+                dueDate: document.getElementById('dueDate').value,
+                status: document.querySelector('input[name="status"]:checked').value
+            };
+
+            // Save to local storage
+            let requests = JSON.parse(localStorage.getItem('equipmentRequests')) || [];
+            requests.push(equipmentData);
+            localStorage.setItem('equipmentRequests', JSON.stringify(requests));
+
+            // Clear the form
+            this.reset();
+
+            // Update the data table
+            populateDataTable();
+        });
+
+        // Populate the data table
+        function populateDataTable() {
+            const dataTableBody = document.getElementById('dataTableBody');
+            dataTableBody.innerHTML = '';
+
+            const requests = JSON.parse(localStorage.getItem('equipmentRequests')) || [];
+            requests.forEach((request) => {
+                const row = document.createElement('tr');
+                row.classList.add('cursor-pointer');
+                row.onclick = () => showDetails(request);
+                row.innerHTML = `
+                    <td class="border px-4 py-2">${request.type}</td>
+                    <td class="border px-4 py-2">${request.brand}</td>
+                    <td class="border px-4 py-2">${request.model}</td>
+                `;
+                dataTableBody.appendChild(row);
+            });
+        }
+
+        // Show details in modal
+        let currentRequestId = null; // Track the currently selected request ID
+
+        function showDetails(request) {
+            currentRequestId = request.id; // Set the current request ID
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <p><strong>Equipment Type:</strong> ${request.type}</p>
+                <p><strong>Brand:</strong> ${request.brand}</p>
+                <p><strong>Model:</strong> ${request.model}</p>
+                <p><strong>Quantity:</strong> ${request.quantity}</p>
+                <p><strong>Serial Number:</strong> ${request.serialNumber}</p>
+                <p><strong>Tech Evaluation:</strong> ${request.techEvaluation}</p>
+                <p><strong>SSRF:</strong> ${request.ssrf}</p>
+                <p><strong>Priority:</strong> ${request.priority}</p>
+                <p><strong>Due Date:</strong> ${request.dueDate}</p>
+                <p><strong>Status:</strong> ${request.status}</p>
+            `;
+
+            // Set the current status in the modal
+            const statusRadioButtons = document.querySelectorAll('input[name="editStatus"]');
+            statusRadioButtons.forEach(radio => {
+                if (radio.value === request.status) {
+                    radio.checked = true;
+                }
+            });
+
+            // Show the modal
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        // Save edited status
+        document.getElementById('saveEditButton').addEventListener('click', function() {
+            const newStatus = document.querySelector('input[name="editStatus"]:checked').value;
+
+            // Update the status in local storage
+            let requests = JSON.parse(localStorage.getItem('equipmentRequests')) || [];
+            const requestIndex = requests.findIndex(request => request.id === currentRequestId);
+            if (requestIndex !== -1) {
+                requests[requestIndex].status = newStatus;
+                localStorage.setItem('equipmentRequests', JSON.stringify(requests));
+            }
+
+            // Close the modal
+            document.getElementById('detailModal').style.display = 'none';
+
+            // Refresh the data table
+            populateDataTable();
+        });
+
+        // Close modal
+        document.getElementById('closeModal').onclick = function() {
+            document.getElementById('detailModal').style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('detailModal')) {
+                document.getElementById('detailModal').style.display = 'none';
+            }
+        };
+
+        // Populate the data table on page load
+        window.onload = populateDataTable;
+    </script>
+</body>
+</html>

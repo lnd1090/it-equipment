@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Equipment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <link href="favicon.ico" rel="icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    header { background-color: #5F8575; }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-md mx-auto bg-white min-h-screen">
+    <!-- Header -->
+    <header class="text-white p-4 shadow-md flex items-center">
+      <a href="index.html" class="mr-2"><i class="fas fa-arrow-left text-white"></i></a>
+      <h1 class="text-xl font-bold">Add Equipment</h1>
+    </header>
+
+    <!-- Form -->
+    <main class="p-4">
+      <form class="space-y-4" id="equipmentForm">
+
+        <!-- Equipment Type -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Equipment Type</label>
+          <select id="equipmentType" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+            <option>Desktop</option>
+            <option>Laptop</option>
+            <option>Printer</option>
+            <option>POS</option>
+            <option>Drawer</option>
+            <option>Scanner</option>
+            <option>PDT</option>
+            <option>EFT</option>
+            <option>Modem</option>
+            <option>Router</option>
+            <option>Switch</option>
+            <option>POE Switch</option>
+            <option>NVR</option>
+            <option>Monitor</option>
+            <option>Weighing Scale</option>
+            <option>Kiosk</option>
+          </select>
+        </div>
+
+        <!-- Brand -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Brand</label>
+          <input type="text" id="equipmentBrand" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Model -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Model</label>
+          <input type="text" id="equipmentModel" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Description</label>
+          <input type="text" id="equipmentDescription" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Quantity -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Quantity</label>
+          <input type="number" id="equipmentQuantity" min="1" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Serial Number + Barcode -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Serial Number</label>
+          <div class="flex">
+            <input type="text" id="serialNumber" class="flex-1 px-3 py-2 border rounded-l-md focus:ring-2 focus:ring-blue-500" required>
+            <button type="button" onclick="scanBarcode()" class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
+              <i class="fas fa-camera"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden Barcode Scanner Container -->
+        <div id="scanner" class="mt-4 hidden">
+          <div id="reader" style="width:100%;"></div>
+          <button type="button" onclick="stopScanner()" class="mt-2 w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700">Stop Scanning</button>
+        </div>
+
+        <!-- MID -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">MID Number</label>
+          <input type="text" id="midNumber" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- TID -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">TID Number</label>
+          <input type="text" id="tidNumber" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Emei -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Emei Number</label>
+          <input type="text" id="emeiNumber" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Purchase Date -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Purchase Date</label>
+          <input type="date" id="purchaseDate" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Assigned -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Assigned To</label>
+          <input type="text" id="equipmentAssigned" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Deployed Date -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Deployed Date</label>
+          <input type="date" id="deployedDate" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Status -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Status</label>
+          <select id="equipmentStatus" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+            <option>Active</option>
+            <option>Defective</option>
+            <option>Repair</option>
+            <option>Pullout</option>
+          </select>
+        </div>
+
+        <!-- Remarks -->
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-1">Remarks</label>
+          <input type="text" id="equipmentRemarks" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+          Save Equipment
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    let html5QrCode;
+
+    function scanBarcode() {
+      document.getElementById('scanner').classList.remove('hidden');
+
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+      }
+
+      const qrConfig = { fps: 10, qrbox: 250 };
+      html5QrCode.start(
+        { facingMode: "environment" },
+        qrConfig,
+        (decodedText) => {
+          document.getElementById("serialNumber").value = decodedText;
+          stopScanner(); // stop once barcode is captured
+        },
+        (errorMessage) => {
+          // optional: handle scan errors
+        }
+      ).catch(err => {
+        alert("Camera start failed: " + err);
+      });
+    }
+
+    function stopScanner() {
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+          document.getElementById('scanner').classList.add('hidden');
+        });
+      }
+    }
+
+    // Form Submission
+    document.getElementById('equipmentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const equipment = {
+        type: document.getElementById('equipmentType').value,
+        brand: document.getElementById('equipmentBrand').value,
+        model: document.getElementById('equipmentModel').value,
+        description: document.getElementById('equipmentDescription').value,
+        quantity: parseInt(document.getElementById('equipmentQuantity').value) || 1,
+        serialNumber: document.getElementById('serialNumber').value,
+        midNumber: document.getElementById('midNumber').value,
+        tidNumber: document.getElementById('tidNumber').value,
+        emeiNumber: document.getElementById('emeiNumber').value,
+        purchaseDate: document.getElementById('purchaseDate').value,
+        assignedTo: document.getElementById('equipmentAssigned').value,
+        deployedDate: document.getElementById('deployedDate').value,
+        status: document.getElementById('equipmentStatus').value,
+        remarks: document.getElementById('equipmentRemarks').value,
+      };
+
+      if (!equipment.serialNumber) {
+        alert('Serial Number is required');
+        return;
+      }
+
+      let equipmentList = JSON.parse(localStorage.getItem('equipment')) || [];
+      if (equipmentList.some(e => e.serialNumber === equipment.serialNumber)) {
+        alert('Equipment with this serial number already exists');
+        return;
+      }
+
+      equipmentList.push(equipment);
+      localStorage.setItem('equipment', JSON.stringify(equipmentList));
+
+      alert('Equipment saved successfully!');
+      this.reset();
+      window.location.href = 'view-equipment.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto bg-white min-h-screen">
+        <!-- Header with back button -->
+        <header class="bg-gray-500 text-white p-4 shadow-md flex items-center">
+            <a href="index.html" class="mr-2">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold">Search</h1>
+        </header>
+
+                <main class="p-4">
+            <div class="mb-4">
+                <input type="text" id="searchInput" placeholder="Search..." class="border border-gray-300 p-2 w-full rounded">
+                <button id="searchButton" class="bg-blue-500 text-white p-2 rounded mt-2 w-full">Search</button>
+            </div>
+            <div id="results" class="hidden">
+                <h2 class="text-lg font-semibold mb-2">Search Results:</h2>
+                <ul id="resultsList" class="list-disc pl-5"></ul>
+            </div>
+        </main>
+
+        <!-- Modal -->
+        <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+            <div class="bg-white p-4 rounded shadow-lg max-w-sm w-full">
+                <h2 class="text-xl font-bold mb-2" id="modalTitle"></h2>
+                <p id="modalContent"></p>
+                <button id="closeModal" class="mt-4 bg-red-500 text-white p-2 rounded">Close</button>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('searchButton').addEventListener('click', function() {
+                const query = document.getElementById('searchInput').value.toLowerCase();
+                const results = [];
+                
+                // Fetch data from local storage
+                const equipment = JSON.parse(localStorage.getItem('equipment')) || [];
+                const regularUsers = JSON.parse(localStorage.getItem('regularUsers')) || [];
+                const deletedEquipment = JSON.parse(localStorage.getItem('deletedEquipment')) || [];
+                const equipmentRequests = JSON.parse(localStorage.getItem('equipmentRequests')) || [];
+
+                // Search in each category
+                const searchInCategory = (category, type) => {
+                    category.forEach(item => {
+                        if (Object.values(item).some(value => value.toString().toLowerCase().includes(query))) {
+                            results.push({ ...item, type });
+                        }
+                    });
+                };
+
+                searchInCategory(equipment, 'Equipment');
+                searchInCategory(regularUsers, 'User');
+                searchInCategory(deletedEquipment, 'Deleted Equipment');
+                searchInCategory(equipmentRequests, 'Equipment Request');
+
+                // Display results
+                const resultsList = document.getElementById('resultsList');
+                resultsList.innerHTML = '';
+                results.forEach(result => {
+                    const li = document.createElement('li');
+                    li.textContent = `${result.type}: ${result.brand || result.firstName || result.model || result.status}`;
+                    li.classList.add('cursor-pointer');
+                    li.addEventListener('click', () => showModal(result));
+                    resultsList.appendChild(li);
+                });
+
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.classList.remove('hidden');
+            });
+
+            function showModal(result) {
+                const modalTitle = document.getElementById('modalTitle');
+                const modalContent = document.getElementById('modalContent');
+
+                modalTitle.textContent = `${result.type} Details`;
+                modalContent.innerHTML = `
+                    <strong>Type:</strong> ${result.type}<br>
+                    <strong>Brand:</strong> ${result.brand || 'N/A'}<br>
+                    <strong>Model:</strong> ${result.model || 'N/A'}<br>
+                    <strong>First Name:</strong> ${result.firstName || 'N/A'}<br>
+                    <strong>Last Name:</strong> ${result.lastName || 'N/A'}<br>
+                    <strong>Status:</strong> ${result.status || 'N/A'}
+                `;
+
+                document.getElementById('modal').classList.remove('hidden');
+            }
+
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('modal').classList.add('hidden');
+            });
+        </script>
+    </div>
+</body>
+</html>

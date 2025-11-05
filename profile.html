@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .profile-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .avatar-upload {
+            position: relative;
+            width: 120px;
+            margin: 0 auto;
+        }
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="profile-container bg-white p-8 rounded-lg shadow-md mx-auto mt-8">
+        <div class="flex justify-between items-center mb-6">
+            <a href="index.html" class="text-blue-600 hover:text-blue-800">
+                <i class="fas fa-arrow-left mr-1"></i>
+            </a>
+            <h1 class="text-2xl font-bold">User Profile</h1>
+            <div class="w-24"></div> <!-- Spacer for alignment -->
+        </div>
+        
+        <form id="profileForm" class="space-y-6">
+            <!-- Avatar Upload -->
+            <div class="avatar-upload">
+                <img id="avatarPreview" src="https://via.placeholder.com/150" alt="Profile Picture" class="avatar-preview">
+                <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                <button type="button" onclick="document.getElementById('avatarInput').click()" 
+                    class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+
+            <!-- Full Name -->
+            <div>
+                <label class="block text-gray-700 text-sm font-medium mb-1">Full Name</label>
+                <input type="text" id="fullName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Username -->
+            <div>
+                <label class="block text-gray-700 text-sm font-medium mb-1">Username</label>
+                <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Password Change -->
+            <div>
+                <label class="block text-gray-700 text-sm font-medium mb-1">New Password</label>
+                <input type="password" id="newPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Leave blank to keep current">
+            </div>
+
+            <!-- Save Button -->
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                Save Changes
+            </button>
+        </form>
+
+        <!-- Logout Button -->
+        <div class="mt-8 text-center">
+            <button onclick="logout()" class="text-red-600 hover:text-red-800 font-medium">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+        </div>
+
+        <script>
+            // Load user data
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentUser = localStorage.getItem('currentUser');
+                if (!currentUser) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Load profile data from localStorage
+                const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                document.getElementById('fullName').value = profileData.fullName || '';
+                document.getElementById('username').value = currentUser;
+                
+                if (profileData.avatar) {
+                    document.getElementById('avatarPreview').src = profileData.avatar;
+                }
+
+                // Avatar upload preview
+                document.getElementById('avatarInput').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            document.getElementById('avatarPreview').src = event.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+
+            // Save profile
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const profileData = {
+                    fullName: document.getElementById('fullName').value,
+                    avatar: document.getElementById('avatarPreview').src,
+                    password: document.getElementById('newPassword').value || undefined
+                };
+
+                // Update username if changed
+                const newUsername = document.getElementById('username').value;
+                if (newUsername !== localStorage.getItem('currentUser')) {
+                    localStorage.setItem('currentUser', newUsername);
+                }
+
+                // Update password if changed
+                if (profileData.password) {
+                    const credentials = JSON.parse(localStorage.getItem('userCredentials'));
+                    credentials.password = profileData.password;
+                    localStorage.setItem('userCredentials', JSON.stringify(credentials));
+                }
+
+                localStorage.setItem('profileData', JSON.stringify(profileData));
+                alert('Profile updated successfully!');
+            });
+
+            function logout() {
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'login.html';
+            }
+        </script>
+    </div>
+</body>
+</html>
