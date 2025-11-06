@@ -176,6 +176,11 @@
     let html5QrCode;
 
     function scanBarcode() {
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        alert('Camera access requires HTTPS. Please access the site over a secure connection.');
+        return;
+      }
+
       // Hide main content and show full-screen scanner
       document.getElementById('mainContent').style.display = 'none';
       document.getElementById('scanner').classList.remove('hidden');
@@ -184,20 +189,37 @@
         html5QrCode = new Html5Qrcode("reader");
       }
 
-      const qrConfig = { fps: 10, qrbox: { width: 250, height: 250 } };
+      const qrConfig = { fps: 5, qrbox: { width: 200, height: 200 } }; // Smaller box for iOS
       html5QrCode.start(
         { facingMode: "environment" },
         qrConfig,
         (decodedText) => {
+          console.log("Scanned: ", decodedText);
           document.getElementById("serialNumber").value = decodedText;
-          stopScanner(); // stop once barcode is captured
+          stopScanner();
         },
         (errorMessage) => {
-          // Optional: handle scan errors, e.g., console.log(errorMessage);
+          console.log("Scan error: ", errorMessage);
         }
       ).catch(err => {
-        alert("Camera start failed: " + err + ". Please ensure camera permissions are granted and try again.");
-        stopScanner();
+        console.error("Camera start failed: ", err);
+        alert("Camera start failed: " + err + ". Trying front camera...");
+        // Fallback to front camera
+        html5QrCode.start(
+          { facingMode: "user" },
+          qrConfig,
+          (decodedText) => {
+            console.log("Scanned (front): ", decodedText);
+            document.getElementById("serialNumber").value = decodedText;
+            stopScanner();
+          },
+          (errorMessage) => {
+            console.log("Scan error (front): ", errorMessage);
+          }
+        ).catch(err2 => {
+          alert("Both cameras failed. Please check permissions and try again.");
+          stopScanner();
+        });
       });
     }
 
@@ -205,6 +227,7 @@
       if (html5QrCode) {
         html5QrCode.stop().then(() => {
           html5QrCode.clear();
+          console.log("Scanner stopped");
         }).catch(err => {
           console.error("Error stopping scanner:", err);
         });
